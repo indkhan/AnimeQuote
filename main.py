@@ -2,7 +2,7 @@ import apikey
 
 import openai
 
-openai.api_key = apikey.openai_api
+openai.api_key = apikey.api
 def openai_response(text):
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -56,13 +56,17 @@ def openai_response(text):
     )
     return response["choices"][0]["message"]["content"]
 
-text = input("tell your problem and get motivated by an manga quote :  ")
-while True:
-    try:
-        print(openai_response(text))
-    except:
-        print("error")
-        exit()
-    text = input("any other problem? :  ")
-    if text == "":
-        exit()
+
+
+
+if __name__ == "__main__":
+    text = input("tell your problem and get motivated by an manga quote :  ")
+    while True:
+        try:
+            print(openai_response(text))
+        except:
+            print("error")
+            exit()
+        text = input("any other problem? :  ")
+        if text == "":
+            exit()
