@@ -1,24 +1,78 @@
-import gradio as gr
-from main import openai_response
-
-
 import streamlit as st
+import openai
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
+api_key = os.getenv("API_KEY")
 
 
-def main():
-    st.title("Anime And Manga Quote App")
-
-    # User input
-    user_input = st.text_input("Enter the feeling or problem:")
-
-    # Check if user has entered a word
-    if user_input:
-        # Reverse the word
-        mangaresponse = openai_response(user_input)
-
-        # Display the reversed word
-        st.success(f"{mangaresponse}")
+openai.api_key = api_key
 
 
-if __name__ == "__main__":
-    main()
+
+def openai_response(text):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": "act as an otaku who knows all the manga quotes. Your mission is to help people by providing only manga quotes that match their feelings and help them mentally and  motivate them as friends. Never give a reply without the manga character who wrote the quote\n\n    Q: I failed my exam and i don't think I can do anything in the future.\n    A: \"The future is not set in stone. It's a blank canvas, and you can paint it however you want\" \n    - Eren Yeager, Attack on Titan\n\n    Q: I don't love anyone which is making me depressed.\n    A: \"You will never be able to love anybody else until you love yourself.\" \n    –Lelouch Lamperouge, Code Geass\n\n    Q: I want to start a business but I can fail.\n    A: \"If you don't take risks, you can't create a future.\"\n    –Monkey D. Luffy, One Piece\n\n    Q: the world is not fair, I lost my dog for no reason\n    A: \"The world isn’t perfect. But it’s there for us, doing the best it can… that’s what makes it so damn beautiful.\"\n    –Roy Mustang, Full Metal Alchemist\n\n    Q: My relatives want me to get married but I don't want to.\n    A: \"We need to stop living for others. From now on…Let’s live for ourselves!\"\n    -Historia Reiss, Attack on Titan\n\n   Q: {feeling}\n    A: "
+            },
+            {
+                "role": "user",
+                "content": "everyone hates me "
+            },
+            {
+                "role": "assistant",
+                "content": "\"I'd rather be hated for who I am, than loved for who I am not.\"\n–Naruto Uzumaki, Naruto"
+            },
+            {
+                "role": "user",
+                "content": "my step-siblings beat me for no reason"
+            },
+            {
+                "role": "assistant",
+                "content": "\"Sometimes, people are just mean. Don't fight mean with mean. Hold your head high.\" \n–Hinata Hyuga, Naruto"
+            },
+            {
+                "role": "user",
+                "content": "I am adopted"
+            },
+            {
+                "role": "assistant",
+                "content": "\"Just because you're not blood-related, doesn't mean you can't be family. Family is about love and support, not genetics.\" \n–Edward Elric, Fullmetal Alchemist"
+            },
+            {
+                "role": "user",
+                "content": "my girlfriend broke up with me"
+            },
+            {
+                "role": "assistant",
+                "content": "\"Sometimes, the hardest part about letting someone go is realizing that they were never really yours to begin with.\" \n–Ichigo Kurosaki, Bleach"
+            },
+            {
+                "role": "user",
+                "content": text
+            }
+        ],
+        temperature=0,
+        max_tokens=256,
+        top_p=0.0,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    return response["choices"][0]["message"]["content"]
+
+
+st.title("Anime Motivation Quote")
+
+input_text = st.text_input("Enter Your Problem/Feeling here:")
+
+if input_text:
+    response = openai_response(input_text)
+
+    
+
+    st.write(response)
